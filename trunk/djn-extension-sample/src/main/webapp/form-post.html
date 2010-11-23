@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Sample - Spring 3 + DirectJngine 1.3</title>
+
+	<link rel="stylesheet" type="text/css" href="./resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="./resources/css/xtheme-gray.css" />
+
+    <!-- GC -->
+ 	<!-- LIBS -->
+ 	<script type="text/javascript" src="./extjs/adapter/ext/ext-base.js"></script>
+ 	<!-- ENDLIBS -->
+
+    <script type="text/javascript" src="./extjs/ext-all-debug.js"></script>
+
+	<!-- DIRECT - DJN LIBS -->
+	<script type="text/javascript" src="./djn/djn-remote-call-support.js"></script>
+	<script type="text/javascript" src="./ejn/ejn-assert.js"></script>
+	<script type="text/javascript" src="./ws/Api.js"></script>
+
+    <script type="text/javascript">
+		Ext.onReady(function() {
+			// == Namespace
+			Ext.namespace('Ext.ws');
+			
+			// == Register providers.
+			// == Remoting API Provider.
+			Ext.ws.REMOTING_API.enableBuffer = 0;
+			var remotingProvider = Ext.Direct.addProvider(Ext.ws.REMOTING_API);
+		
+        	// == VERY IMPORTANT: this is for debugging purposes, set validateCalls to false if this causes problems.
+        	Djn.RemoteCallSupport.addCallValidation(remotingProvider);
+        	Djn.RemoteCallSupport.validateCalls = true;
+
+        	// == Form Post
+        	var form = new Ext.form.FormPanel({
+        		id: 'formPost',
+	            border: false,
+        		items: [{
+        			xtype: 'tbtext',
+        			text: '<b>Google Translation: </b>Put some english word in the textfield, and click \"submit\"',
+        			style: 'padding-bottom: 10px;'
+        		},{
+        			xtype: 'textfield',
+        			fieldLabel: 'Text to translate',
+        			id: 'translateText',
+        			name: 'translateText',
+        			anchor: '100%'
+        		},{
+        			xtype: 'tbtext',
+        			id: 'resultText',
+        			text: '<b>Response:</b>',
+        			style: 'padding-top: 5px;'
+        		}],
+        		api: {
+        			load: TranslateDirectAction.translate,
+        			submit: TranslateDirectAction.translate
+        		},
+        		paramOrder: ['translateText']
+        	});
+
+        	// == Form Submit
+        	var submitForm = function() {
+        		form.getForm().submit({
+        			params: {
+        				parameter: Ext.getCmp('translateText').getValue()
+        			},
+        			success: loadDataTextField,
+        			failure: function(form, action) {
+        				Ext.Msg.alert('Failure', 'Error trying to load data.');
+        			}
+        		});
+        	};
+
+        	var loadDataTextField = function(result, response) {
+				var responseValue = String.format("<b>Response:</b>&nbsp;[ENGLISH-SPANISH Translation]>  {0}", response.result.data);
+        		Ext.getCmp('resultText').setText(responseValue);
+        	};
+
+        	var ExamplePanel = Ext.extend(Ext.Panel, {
+        	    width: 500,
+        	    padding: 10,
+        	    initComponent: function() {
+        	        this.items = [{
+        	            xtype: 'fieldset',
+        	            title: 'Form Post',
+        	            layout: 'form',
+        	            items: [form]
+        	        },{
+        	            xtype: 'container',
+        	            autoEl: 'div',
+        	            layout: 'hbox',
+        	            items: [{
+        	                xtype: 'button',
+        	                text: 'Submit',
+        	                handler: submitForm
+        	            },{
+        	                xtype: 'tbspacer',
+        	                width: 5,
+        	                flex: 1
+        	            },{
+        	                xtype: 'button',
+        	                text: 'Cancel',
+        	                handler: function() {
+        	            		Ext.getCmp('name').setValue('');
+        	            	}
+        	            }]
+        	        }];
+        	        ExamplePanel.superclass.initComponent.call(this);
+        	    }
+        	});
+        	
+			// == Popup Example.
+        	var popup = new Ext.Window({
+            	title: 'DJN 1.3 + Spring 3 Integration',
+            	resizable: false,
+				items: [new ExamplePanel()]
+			});
+        	popup.show();
+		});
+    </script>
+</head>
+<body>
+
+</body>
+</html>
