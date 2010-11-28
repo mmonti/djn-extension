@@ -19,6 +19,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.0.4.RELEASE</spring.version>
 		<junit.version>4.8.1</junit.version>
+		<djn.extension>0.0.1-SNAPSHOT</djn.extension>
 	</properties>
 	
 	<dependencies>
@@ -84,7 +85,11 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>		
-
+		<dependency>
+			<groupId>ar.com.ws.djn.extension</groupId>
+			<artifactId>djn-extension</artifactId>
+			<version>${djn.extension}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>djn-extension-sample</finalName>
