@@ -19,7 +19,7 @@
 
 	<servlet>
 		<servlet-name>DjnServlet</servlet-name>
-		<servlet-class>ar.com.ws.djn.extensions.servlet.SpringDirectJNgineServlet</servlet-class>
+		<servlet-class>ar.com.ws.djn.extension.servlet.SpringDirectJNgineServlet</servlet-class>
 
 		<init-param>
 			<param-name>debug</param-name>
