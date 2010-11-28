@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import ar.com.ws.djn.extension.annotation.SpringDirectAction;
+
 import com.softwarementors.extjs.djn.ClassUtils;
 import com.softwarementors.extjs.djn.api.RegisteredAction;
 import com.softwarementors.extjs.djn.api.RegisteredApi;
@@ -17,7 +19,6 @@ import com.softwarementors.extjs.djn.api.RegisteredPollMethod;
 import com.softwarementors.extjs.djn.api.RegisteredStandardMethod;
 import com.softwarementors.extjs.djn.api.Registry;
 import com.softwarementors.extjs.djn.config.ApiConfigurationException;
-import com.softwarementors.extjs.djn.config.annotations.DirectAction;
 import com.softwarementors.extjs.djn.config.annotations.DirectFormPostMethod;
 import com.softwarementors.extjs.djn.config.annotations.DirectMethod;
 import com.softwarementors.extjs.djn.config.annotations.DirectPollMethod;
@@ -71,7 +72,7 @@ public class SpringScanner extends Scanner {
 		assert api != null;
 		assert actionClass != null;
     
-	    DirectAction actionAnnotation = actionClass.getAnnotation(DirectAction.class);
+		SpringDirectAction actionAnnotation = actionClass.getAnnotation(SpringDirectAction.class);
 	    List<String> actionNames = new ArrayList<String>();
 	    if (actionAnnotation != null) {
 	    	String[] action = actionAnnotation.action();
