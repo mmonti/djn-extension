@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Sample - Spring 3 + DirectJngine 1.3</title>
+
+	<link rel="stylesheet" type="text/css" href="./resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="./resources/css/xtheme-gray.css" />
+
+    <!-- GC -->
+ 	<!-- LIBS -->
+ 	<script type="text/javascript" src="./extjs/adapter/ext/ext-base.js"></script>
+ 	<!-- ENDLIBS -->
+
+    <script type="text/javascript" src="./extjs/ext-all-debug.js"></script>
+
+	<!-- DIRECT - DJN LIBS -->
+	<script type="text/javascript" src="./djn/djn-remote-call-support.js"></script>
+	<script type="text/javascript" src="./ejn/ejn-assert.js"></script>
+	<script type="text/javascript" src="./ws/Api.js"></script>
+
+    <script type="text/javascript">
+		Ext.onReady(function() {
+			// == Namespace
+			Ext.namespace('Ext.ws');
+			
+			// == Register providers.
+			// == Remoting API Provider.
+			Ext.ws.REMOTING_API.enableBuffer = 0;
+			var remotingProvider = Ext.Direct.addProvider(Ext.ws.REMOTING_API);
+
+			// == Pooling Provider.
+			Ext.Direct.addProvider(
+				Ext.ws.REMOTING_API, {
+					type:'polling', interval: 1000, url: Ext.ws.POLLING_URLS.message
+				}
+			);
+		
+        	// == VERY IMPORTANT: this is for debugging purposes, set validateCalls to false if this causes problems.
+        	Djn.RemoteCallSupport.addCallValidation(remotingProvider);
+        	Djn.RemoteCallSupport.validateCalls = true;
+        	
+        	// == Direct Pooling Handler.
+        	Ext.Direct.on('message', function(e) {
+        		var value = "Server Time: {0}";
+        		displayTime.setText(String.format(value, e.data));	
+        	});
+
+        	var displayTime = new Ext.form.Label({
+        		id: 'displayTime',
+        		text: 'Server Time:'
+        	});
+        
+        	var ExamplePanel = Ext.extend(Ext.Panel, {
+        	    width: 500,
+        	    padding: 10,
+        	    initComponent: function() {
+        	        this.items = [{
+        	            xtype: 'fieldset',
+        	            title: 'Pooling',
+        	            layout: 'form',
+        	            items: [displayTime]
+        	        }];
+        	        ExamplePanel.superclass.initComponent.call(this);
+        	    }
+        	});
+        	
+			// == Popup Example.
+        	var popup = new Ext.Window({
+            	title: 'DJN 1.3 + Spring 3 Integration',
+            	resizable: false,
+				items: [new ExamplePanel()]
+			});
+        	popup.show();
+		});
+    </script>
+</head>
+<body>
+
+</body>
+</html>
